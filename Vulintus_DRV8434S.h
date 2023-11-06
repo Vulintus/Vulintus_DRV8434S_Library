@@ -16,7 +16,7 @@
 
 #include <DRV8434S_Registers.h>
 
-#define DRV8434S_SPI_SPEED	10000000	// SPI clock speed, in Hz.
+#define DRV8434S_SPI_SPEED	10000000		// SPI clock speed, in Hz.	
 
 
 //CLASSES ******************************************************************************************************//
@@ -32,10 +32,11 @@ class Vulintus_DRV8434S {
 		};
 		
 		// Constructors. //
-		Vulintus_DRV8434S(SPIClass *spi_bus, uint8_t pin_cs);	// SPI with chip-select
+		Vulintus_DRV8434S(SPIClass *spi_bus, uint8_t pin_cs);					// SPI with chip-select.
+		Vulintus_DRV8434S(SPIClass *spi_bus, uint8_t pin_cs, uint8_t pin_slp);	// SPI with chip-select and sleep input.
 
 		// Variables. //
-		volatile bool fault;						// Fault flag, used in interrupts.
+		volatile uint8_t fault;						// Fault code, used in interrupts.
 
 		// Functions. //
 		void begin(void); 							// Initialization.
@@ -95,6 +96,11 @@ class Vulintus_DRV8434S {
 		void set_lock(bool lock);			// Lock/unlock the registers (default is unlocked).
 		uint8_t revision_id(void);			// Read the silicon revision ID.
 
+		uint8_t write_register(uint8_t reg_addr, uint8_t reg_val); 	// Write to a register.
+		uint8_t read_register(uint8_t reg_addr);  					// Read from a register.
+
+		
+
 	private:
 		
 		// Variables. //
@@ -109,20 +115,17 @@ class Vulintus_DRV8434S {
 		uint8_t _pin_vref;						// Current set reference pin.
 		uint8_t _vref_pwm = 255; 				// Current set reference PWM setting.
 
-		uint8_t _status; 						// Status bits returned by every register read/write.
 		uint8_t _ctrl_reg_val[7];				// Current control register 1-7 values.
 
 		uint16_t _target_current = 500; 		// Target output current, in milliamps.
 		uint16_t _max_current = 2500; 			// Maximum possible output current, in milliamps.
 
 		// Functions. //
-		void fault_interrupt(void);				// Interrupt function for the fault input.	
+		void spi_start(void);					// Start an SPI transaction.
+		void spi_end(void);						// End an SPI transaction.
 
-		uint8_t write_register(uint8_t reg_addr, uint8_t reg_val); 	// Write to a register.
-		uint8_t read_register(uint8_t reg_addr);  					// Read from a register.
-		void spi_start(void);										// Start an SPI transaction.
-		void spi_end(void);											// End an SPI transaction.
+		// void fault_interrupt();					// Interrupt function for the fault input.		
 
 };
 
-#endif 								//#ifndef VULINTUS_DRV8434S_H
+#endif 									//#ifndef VULINTUS_DRV8434S_H

@@ -8,7 +8,7 @@
 */
 
 
-#include <Vulintus_DRV8434S.h>            // Vulintus DRV8434S library.
+#include <Vulintus_DRV8434S.h>          // Library header.
 
 
 // CLASS PUBLIC FUNCTIONS ****************************************************// 
@@ -21,6 +21,17 @@ Vulintus_DRV8434S::Vulintus_DRV8434S(SPIClass *spi_bus, uint8_t pin_cs)
   _spi_bus = spi_bus;                   // Set the SPI bus.
   pinMode(_pin_cs, OUTPUT);             // Set the CS pin mode to output.
   digitalWrite(_pin_cs, HIGH);          // Set the CS pin high.
+}
+
+
+// Class constructor (SPI with chip-select and sleep input).
+Vulintus_DRV8434S::Vulintus_DRV8434S(SPIClass *spi_bus, uint8_t pin_cs, uint8_t pin_slp)
+    : _pin_cs(pin_cs), _pin_slp(pin_slp)
+{
+  _spi_bus = spi_bus;                   // Set the SPI bus.
+  pinMode(_pin_cs, OUTPUT);             // Set the CS pin mode to output.
+  digitalWrite(_pin_cs, HIGH);          // Set the CS pin high.
+  set_sleep_pin(_pin_slp);              // Set the sleep pin.
 }
 
 
@@ -46,7 +57,7 @@ void Vulintus_DRV8434S::set_fault_pin(uint8_t pin_flt)
 // {
 //   if (_hw_flt) {                                          // If a fault pin is set...
 //     attachInterrupt(digitalPinToInterrupt(_pin_flt), 
-//           Vulintus_DRV8434S::fault_interrupt, FALLING);   // Set a falling interrupt.
+//           fault_interrupt, FALLING);                      // Set a falling interrupt.
 //     return DRV8434S_NO_ERROR;                             // Return the no-error code.
 //   }
 //   else {                                                  // Otherwise, if no fault pin is set...
@@ -60,29 +71,24 @@ void Vulintus_DRV8434S::set_fault_pin(uint8_t pin_flt)
 // {
 //   Vulintus_DRV8434S::set_fault_pin(pin_flt);              // Set the fault pin.
 //   attachInterrupt(digitalPinToInterrupt(_pin_flt), 
-//         Vulintus_DRV8434S::fault_interrupt, FALLING);     // Set a falling interrupt.
+//         fault_interrupt, FALLING);                        // Set a falling interrupt.
 // }
 
 
 // Read any active fault codes.
 uint8_t Vulintus_DRV8434S::read_fault(void)
 {
-
+  fault = read_register(DRV8434S_REG_FAULT);    //Read the value of the fault register.
+  return fault;                                 //Return the fault value.
 }
 
 
 // Clear all active faults.
 void Vulintus_DRV8434S::clear_faults(void)
 {
-
+  _ctrl_reg_val[3] != DRV8434S_CTRL4_CLR_FLT;             // Set the clear fault bit.
+  write_register(DRV8434S_REG_CTRL4, _ctrl_reg_val[3]);   // Update control register 4.
 }		
-
-
-// // Check for an active fault.
-// void Vulintus_DRV8434S::fault(void)
-// {
-//   return _fault;    //Return the current value of the fault flag.
-// }	
 
 
 // Reset all registers to the default settings.
@@ -414,15 +420,6 @@ uint8_t Vulintus_DRV8434S::revision_id(void)
 }		
 
 
-// CLASS PRIVATE FUNCTIONS ***************************************************// 
-
-// Interrupt function for the fault input.
-void Vulintus_DRV8434S::fault_interrupt(void)
-{
-  fault = 1;       //Set the fault flag to 1.
-}	
-
-
 // Write to a register.
 uint8_t Vulintus_DRV8434S::write_register(uint8_t reg_addr, uint8_t new_data)
 {
@@ -430,14 +427,11 @@ uint8_t Vulintus_DRV8434S::write_register(uint8_t reg_addr, uint8_t new_data)
 	uint8_t old_data;			                    // Existing data in register.
 
   spi_start();                              // Start the SPI transaction.
-  _status = _spi_bus->transfer(cmd);        // Send the command/address byte.
+  uint8_t status = _spi_bus->transfer(cmd); // Send the command/address byte.
   old_data = _spi_bus->transfer(new_data);  // Send the new data/register value.
-  digitalWrite(_pin_cs, HIGH);              // Set the chip select line high. 
   spi_end();                                // End the SPI transaction.
 
-  if (_status & 0x3C) {                     // If any of the UVL, CPUV, OCP, or STL bits are high...
-    fault = 1;                             // Set the fault flag to 1.
-  }
+  fault |= (status & 0x3F);                 // Update the fault code if any fault bits were high.
 
 	return old_data;											    // Return the pre-exisitng register data.
 }
@@ -450,23 +444,23 @@ uint8_t Vulintus_DRV8434S::read_register(uint8_t reg_addr)
 	uint8_t data;			                        // Current register data.
 
   spi_start();                              // Start the SPI transaction.
-  _status = _spi_bus->transfer(cmd);        // Send the command/address byte.
+  uint8_t status = _spi_bus->transfer(cmd); // Send the command/address byte.
   data = _spi_bus->transfer(0);             // Send the a dummy byte to get a byte back.
   spi_end();                                // End the SPI transaction.
 
-  if (_status & 0x3C) {                     // If any of the UVL, CPUV, OCP, or STL bits are high...
-    fault = 1;                             // Set the fault flag to 1.
-  }
+  fault |= (status & 0x3F);                 // Update the fault code if any fault bits were high.
 
 	return data;											        // Return the pre-exisitng register data.
 }
 
 
+// CLASS PRIVATE FUNCTIONS ***************************************************// 
+
 // Start an SPI transaction.
 void Vulintus_DRV8434S::spi_start(void)
 {
-  _spi_bus->beginTransaction(SPISettings(DRV8434S_SPI_SPEED, MSBFIRST, SPI_MODE0));   // Set the SPI settings for this chip.
   digitalWrite(_pin_cs, LOW);     // Set the chip select line low.
+  _spi_bus->beginTransaction(SPISettings(DRV8434S_SPI_SPEED, MSBFIRST, SPI_MODE1));   // Set the SPI settings for this chip.  
   delayMicroseconds(1);           // Pause for 1 microsecond. 
 }
 
@@ -474,6 +468,13 @@ void Vulintus_DRV8434S::spi_start(void)
 // End an SPI transaction.
 void Vulintus_DRV8434S::spi_end(void)
 {
-  digitalWrite(_pin_cs, HIGH);    // Set the chip select line high. 
   _spi_bus->endTransaction();     // Release the SPI bus.
+  digitalWrite(_pin_cs, HIGH);    // Set the chip select line high. 
 }
+
+
+// // Interrupt function for the fault input.
+// void Vulintus_DRV8434S::fault_interrupt()
+// {
+//   drv8434s_fault |= DRV8434S_FAULT_FAULT;   //Set the fault flag to 1.
+// }	
