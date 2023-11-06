@@ -82,7 +82,7 @@ class Vulintus_DRV8434S {
 
 		void set_step_pin(uint8_t pin_step);				// Set the step	pin (disables SPI stepping).
 		void use_SPI_step(bool enable);						// Use SPI for stepping (default off).
-		void step(void);									// Trigger a step.
+		void step(void);								// Trigger a step.
 		void set_microsteps(DRV8434S_Micostep_Mode mode);	// Set the microstep setting.
 
 		void set_enable_pin(uint8_t pin_en);		// Set the enable pin (disables SPI enable).
