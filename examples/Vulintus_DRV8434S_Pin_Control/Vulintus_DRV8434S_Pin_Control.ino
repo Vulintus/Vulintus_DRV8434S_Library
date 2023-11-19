@@ -29,7 +29,7 @@
 // Vulintus_DRV8434S stepper = Vulintus_DRV8434S(&SPI, PIN_DRV_CS);             // << Call this if SLP is externally pulled up.
 Vulintus_DRV8434S stepper = Vulintus_DRV8434S(&SPI, PIN_DRV_CS, PIN_DRV_SLP);   // << Call this if SLP is NOT externally pulled up.
 const uint16_t start_step_period = 750;     //Starting step period, in microseconds.
-const uint16_t min_step_period = 150;       //Minimum step period (at max. speed), in microseconds.
+const uint16_t min_step_period = 500;       //Minimum step period (at max. speed), in microseconds.
 uint16_t cur_step_period;                   //Current step period, decreases as speed ramps up.
 const uint16_t num_steps = 6500;            //Number of steps/microsteps to move.
 bool dir;                                   //Boolean for flipping the direction.
@@ -57,7 +57,7 @@ void setup() {
 
   //Set the output current.
   stepper.set_current_max(1000);        //Maximum possible current based on the maximum voltage on the VREF pin (Imax = VREF / 1.32 V/A).
-  stepper.set_current(400);             //Target output current.
+  stepper.set_current(500);             //Target output current.
 
   //Check the actual output current after setting the 4-bt TRQ_DAC.
   Serial.print("stepper.actual_current = ");

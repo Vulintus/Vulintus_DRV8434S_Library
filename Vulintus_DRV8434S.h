@@ -18,9 +18,23 @@
 
 #define DRV8434S_SPI_SPEED	10000000		// SPI clock speed, in Hz.	
 
+#ifndef _VULINTUS_STEPPER_DRIVER_
+#define _VULINTUS_STEPPER_DRIVER_
+
+class Vulintus_Stepper_Driver
+{
+    public:
+        
+        Vulintus_Stepper_Driver(void);
+
+        virtual void step();
+};
+
+#endif      //#ifndef _VULINTUS_STEPPER_DRIVER_
+
 
 //CLASSES ******************************************************************************************************//
-class Vulintus_DRV8434S {
+class Vulintus_DRV8434S : public Vulintus_Stepper_Driver {
 
 	public:
 	
@@ -32,8 +46,8 @@ class Vulintus_DRV8434S {
 		};
 		
 		// Constructors. //
-		Vulintus_DRV8434S(SPIClass *spi_bus, uint8_t pin_cs);					// SPI with chip-select.
-		Vulintus_DRV8434S(SPIClass *spi_bus, uint8_t pin_cs, uint8_t pin_slp);	// SPI with chip-select and sleep input.
+		Vulintus_DRV8434S(SPIClass *spi_bus, uint8_t pin_cs);		// SPI with chip-select.
+		Vulintus_DRV8434S(SPIClass *spi_bus, uint8_t pin_cs, uint8_t pin_slp);		// SPI with chip-select and sleep input.
 
 		// Variables. //
 		volatile uint8_t fault;						// Fault code, used in interrupts.
@@ -82,7 +96,7 @@ class Vulintus_DRV8434S {
 
 		void set_step_pin(uint8_t pin_step);				// Set the step	pin (disables SPI stepping).
 		void use_SPI_step(bool enable);						// Use SPI for stepping (default off).
-		void step(void);								// Trigger a step.
+		virtual void step(void);									// Trigger one step.
 		void set_microsteps(DRV8434S_Micostep_Mode mode);	// Set the microstep setting.
 
 		void set_enable_pin(uint8_t pin_en);		// Set the enable pin (disables SPI enable).
