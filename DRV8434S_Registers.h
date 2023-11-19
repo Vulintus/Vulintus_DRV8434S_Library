@@ -177,6 +177,4 @@ enum DRV8434S_CTRL9_Reg_Val : uint8_t {
   DRV8434S_CTRL9_TRQ_SCALE = 0x0F,      // Upper 4-bits of TRQ_COUNT.
 };
 
-
-
 #endif                                    // #ifndef DRV8434S_REGISTERS_H
