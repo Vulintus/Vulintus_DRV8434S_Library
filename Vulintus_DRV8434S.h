@@ -11,26 +11,14 @@
 #ifndef VULINTUS_DRV8434S_H
 #define VULINTUS_DRV8434S_H
 
-#include <Arduino.h>
-#include <SPI.h>
+#include <Arduino.h>						// Arduino main include file.
+#include <SPI.h>							// Standard Arduino SPI library.
 
-#include <DRV8434S_Registers.h>
+#include <Vulintus_Stepper_Driver.h>		// Vulintus wrapper library of common stepper functions.
+#include <DRV8434S_Registers.h>				// DRV8434S register addresses and settings.
 
-#define DRV8434S_SPI_SPEED	10000000		// SPI clock speed, in Hz.	
 
-#ifndef _VULINTUS_STEPPER_DRIVER_
-#define _VULINTUS_STEPPER_DRIVER_
-
-class Vulintus_Stepper_Driver
-{
-    public:
-        
-        Vulintus_Stepper_Driver(void);
-
-        virtual void step();
-};
-
-#endif      //#ifndef _VULINTUS_STEPPER_DRIVER_
+#define DRV8434S_SPI_SPEED	10000000		// SPI clock speed, in Hz.
 
 
 //CLASSES ******************************************************************************************************//
@@ -91,12 +79,12 @@ class Vulintus_DRV8434S : public Vulintus_Stepper_Driver {
 		
 		void set_dir_pin(uint8_t pin_dir);			// Set the direction pin (disables SPI direction-setting).
 		void use_SPI_direction(bool enable);		// Use SPI for direction setting (default off).
-		void set_direction(bool dir);				// Set the direction with SPI.
-		void get_direction(void);					// Get the current direction.
+		void set_direction(bool dir);				// Set the current direction.
+		bool get_direction(void);					// Get the current direction.
 
 		void set_step_pin(uint8_t pin_step);				// Set the step	pin (disables SPI stepping).
 		void use_SPI_step(bool enable);						// Use SPI for stepping (default off).
-		virtual void step(void);									// Trigger one step.
+		void step(void);									// Trigger one step.
 		void set_microsteps(DRV8434S_Micostep_Mode mode);	// Set the microstep setting.
 
 		void set_enable_pin(uint8_t pin_en);		// Set the enable pin (disables SPI enable).
@@ -112,7 +100,6 @@ class Vulintus_DRV8434S : public Vulintus_Stepper_Driver {
 
 		uint8_t write_register(uint8_t reg_addr, uint8_t reg_val); 	// Write to a register.
 		uint8_t read_register(uint8_t reg_addr);  					// Read from a register.
-
 		
 
 	private:

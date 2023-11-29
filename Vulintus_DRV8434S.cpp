@@ -256,7 +256,7 @@ void Vulintus_DRV8434S::set_direction(bool dir) {
 
 
 // Get the current direction.
-void Vulintus_DRV8434S::get_direction(void) 
+bool Vulintus_DRV8434S::get_direction(void) 
 {
   bool dir;                                         // Boolean direction.
   if (_ctrl_reg_val[2] & DRV8434S_CTRL3_SPI_DIR) {  // If we're using SPI for direction setting...

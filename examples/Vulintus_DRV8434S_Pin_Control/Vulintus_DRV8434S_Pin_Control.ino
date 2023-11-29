@@ -1,4 +1,4 @@
-/*  Vulintus_DRV8434S_Pin_Controll.ino
+/*  Vulintus_DRV8434S_Pin_Control.ino
 
     copyright Vulintus, Inc., 2023
 
