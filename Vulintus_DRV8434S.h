@@ -93,7 +93,7 @@ class Vulintus_DRV8434S : public Vulintus_Stepper_Driver {
 		void disable(void);							// Disable the driver
 
 		void set_sleep_pin(uint8_t pin_slp);		// Set the sleep pin.		
-		bool sleep(bool enable);					// Enable/disable sleep mode.
+		uint8_t sleep(bool enable);					// Enable/disable sleep mode.
 
 		void set_lock(bool lock);			// Lock/unlock the registers (default is unlocked).
 		uint8_t revision_id(void);			// Read the silicon revision ID.

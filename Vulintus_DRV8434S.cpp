@@ -381,14 +381,9 @@ void Vulintus_DRV8434S::set_sleep_pin(uint8_t pin_slp)
 
 
 // Enable/disable sleep mode.
-bool Vulintus_DRV8434S::sleep(bool enable) {
+uint8_t Vulintus_DRV8434S::sleep(bool enable) {
   if (_hw_slp) {                        // If the sleep line is connected...
-    if (enable) {                       // If starting sleep mode...
-      digitalWrite(_pin_slp, LOW);      // Set the sleep line low.
-    }
-    else {                              // If ending sleep mode...
-      digitalWrite(_pin_slp, HIGH);     // Set the sleep line high.
-    }
+    digitalWrite(_pin_slp, !enable);    // Set the sleep line to the specified value.
     return DRV8434S_NO_ERROR;           // Return a 1 to indicate success.
   }
   else {                                // Otherwise, if the sleep input wasn't set...
