@@ -455,7 +455,7 @@ uint8_t Vulintus_DRV8434S::read_register(uint8_t reg_addr)
 void Vulintus_DRV8434S::spi_start(void)
 {
   digitalWrite(_pin_cs, LOW);     // Set the chip select line low.
-  _spi_bus->beginTransaction(SPISettings(DRV8434S_SPI_SPEED, MSBFIRST, SPI_MODE1));   // Set the SPI settings for this chip.  
+  _spi_bus->beginTransaction(SPISettings(DRV8434S_SPI_SPEED, MSBFIRST, DRV8434S_SPI_MODE));   // Set the SPI settings for this chip.  
   delayMicroseconds(1);           // Pause for 1 microsecond. 
 }
 
