@@ -17,12 +17,13 @@
 #include <Vulintus_Stepper_Driver.h>		// Vulintus wrapper library of common stepper functions.
 #include <DRV8434S_Registers.h>				// DRV8434S register addresses and settings.
 
-
-#define DRV8434S_SPI_SPEED	10000000		// SPI clock speed, in Hz.
+#define DRV8434S_SPI_SPEED	5000000			// SPI clock speed, in Hz.
+// #define DRV8434S_SPI_SPEED	10000000		// SPI clock speed, in Hz.
 
 
 //CLASSES ******************************************************************************************************//
 class Vulintus_DRV8434S : public Vulintus_Stepper_Driver {
+// class Vulintus_DRV8434S {
 
 	public:
 	

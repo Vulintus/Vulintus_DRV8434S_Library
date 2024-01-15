@@ -18,7 +18,7 @@ enum DRV8434S_REG_ADDR : uint8_t {
   DRV8434S_REG_DIAG1 = 0x01,            // DIAG status 1.
   DRV8434S_REG_DIAG2 = 0x02,            // DIAG status 2.
   DRV8434S_REG_CTRL1 = 0x03,            // Control register 1.
-  DRV8434S_REG_CTRL2 = 0x04,            // Control register 2.DRV8434S_FAULT
+  DRV8434S_REG_CTRL2 = 0x04,            // Control register 2.
   DRV8434S_REG_CTRL3 = 0x05,            // Control register 3.
   DRV8434S_REG_CTRL4 = 0x06,            // Control register 4.
   DRV8434S_REG_CTRL5 = 0x07,            // Control register 5.
