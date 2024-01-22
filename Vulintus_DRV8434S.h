@@ -22,11 +22,7 @@
 
 
 //CLASSES ******************************************************************************************************//
-#ifdef __AVR__
-	class Vulintus_DRV8434S : public Vulintus_Stepper_Driver {
-#else
-	class Vulintus_DRV8434S {
-#endif	//#ifdef __AVR__
+class Vulintus_DRV8434S : public Vulintus_Stepper_Driver {
 
 	public:
 	
