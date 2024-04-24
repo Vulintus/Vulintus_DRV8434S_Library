@@ -14,8 +14,8 @@
 #include <Arduino.h>						// Arduino main include file.
 #include <SPI.h>							// Standard Arduino SPI library.
 
-#include <Vulintus_Stepper_Driver.h>		// Vulintus wrapper library of common stepper functions.
 #include <DRV8434S_Registers.h>				// DRV8434S register addresses and settings.
+#include <Vulintus_Stepper_Driver.h>		// Vulintus wrapper library of common stepper functions.
 
 #define DRV8434S_SPI_SPEED	10000000		// SPI clock speed, in Hz.
 #define DRV8434S_SPI_MODE	SPI_MODE1		// SPI mode (data capture on falling edge).
@@ -86,6 +86,7 @@ class Vulintus_DRV8434S : public Vulintus_Stepper_Driver {
 		void use_SPI_step(bool enable);						// Use SPI for stepping (default off).
 		void step(void);									// Trigger one step.
 		void set_microsteps(DRV8434S_Micostep_Mode mode);	// Set the microstep setting.
+		uint16_t get_microsteps(void);						// Get the current microstep setting.
 
 		void set_enable_pin(uint8_t pin_en);		// Set the enable pin (disables SPI enable).
 		void use_SPI_enable(bool enable);			// Use SPI for enabling/disabling (default on).
@@ -120,6 +121,8 @@ class Vulintus_DRV8434S : public Vulintus_Stepper_Driver {
 
 		uint16_t _target_current = 500; 		// Target output current, in milliamps.
 		uint16_t _max_current = 2500; 			// Maximum possible output current, in milliamps.
+
+		uint16_t _microsteps = 1;				// Current microstepping multiplier.
 
 		// Functions. //
 		void spi_start(void);					// Start an SPI transaction.

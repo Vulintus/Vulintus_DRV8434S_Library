@@ -313,6 +313,47 @@ void Vulintus_DRV8434S::set_microsteps(DRV8434S_Micostep_Mode mode)
   _ctrl_reg_val[2] &= ~DRV8434S_CTRL3_MICROSTEP_MODE;     // Clear the microstep setting in control register 3.
   _ctrl_reg_val[2] |= mode;                               // Set the specified microstep mode.
   write_register(DRV8434S_REG_CTRL3, _ctrl_reg_val[2]);   // Update control register 3.
+  switch (mode) {
+    case DRV8434S_MICROSTEP_1_100:      // Full step (2-phase excitation) with 100% current.
+      _microsteps = 1;
+      break;
+    case DRV8434S_MICROSTEP_1_71:       // Full step (2-phase excitation) with 71% current.    
+      _microsteps = 1;
+      break;
+    case DRV8434S_MICROSTEP_2_NC:       // Non-circular 1/2 step.    
+      _microsteps = 2;
+      break;
+    case DRV8434S_MICROSTEP_2:          // 1/2 step.    
+      _microsteps = 2;
+      break;
+    case DRV8434S_MICROSTEP_4:          // 1/4 step.    
+      _microsteps = 4;
+      break;
+    case DRV8434S_MICROSTEP_8:          // 1/8 step.    
+      _microsteps = 8;
+      break;
+    case DRV8434S_MICROSTEP_16:         // 1/16 step.    
+      _microsteps = 16;
+      break;
+    case DRV8434S_MICROSTEP_32:         // 1/32 step.    
+      _microsteps = 32;
+      break;
+    case DRV8434S_MICROSTEP_64:         // 1/64 step.    
+      _microsteps = 64;
+      break;
+    case DRV8434S_MICROSTEP_128:        // 1/128 step.    
+      _microsteps = 128;
+      break;
+    case DRV8434S_MICROSTEP_256:        // 1/256 step.    
+      _microsteps = 256;
+      break;
+  }
+}
+
+
+// Get the current microstep setting.
+uint16_t Vulintus_DRV8434S::get_microsteps(void) {
+  return _microsteps;
 }
 
 
